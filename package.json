@@ -1,0 +1,19 @@
+{
+  "name": "build_aws_ec2_service_for_trello_api",
+  "version": "1.0.0",
+  "description": "AWS_TRELLO",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bodyduardU/build_aws_ec2_service_for_trello_api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bodyduardU/build_aws_ec2_service_for_trello_api/issues"
+  },
+  "homepage": "https://github.com/bodyduardU/build_aws_ec2_service_for_trello_api#readme"
+}
