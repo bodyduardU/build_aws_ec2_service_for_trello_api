@@ -1,19 +1,20 @@
 {
-  "name": "build_aws_ec2_service_for_trello_api",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "AWS_TRELLO",
-  "main": "index.js",
+  "description": "",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bodyduardU/build_aws_ec2_service_for_trello_api.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bodyduardU/build_aws_ec2_service_for_trello_api/issues"
-  },
-  "homepage": "https://github.com/bodyduardU/build_aws_ec2_service_for_trello_api#readme"
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^6.9.2",
+    "node-fetch": "^2.0.0"
+  }
 }
