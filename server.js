@@ -1,58 +1,68 @@
-var express = require('express');
+const express = require('express');
+const bodyParser = require('body-parser');
+
 const app = express();
-var cors = require('cors');
-var mongoose = require('mongoose');
-// var router = require('route');
-app.use(cors());
-var bodyParser = require('body-parser');
-var urlencodeParser = bodyParser.urlencoded({
-  extended: false,
-});
 app.use(bodyParser.json());
-app.use(urlencodeParser);
-app.use('/user', () => {
-  console.log('123');
+const axios = require('axios');
+const mongoose = require('mongoose');
+const callbackURL = 'https://38ba-188-43-136-33.jp.ngrok.io/trello-webhook';
+
+mongoose.connect('mongodb://localhost:27017/').then(() => {});
+
+const apiKey = '7c1b127ab842ef6b6163f45eaa980d4b';
+const token =
+  'ATTA463bd12303cd72bef013f6480b51a5124b66c2424fd6977c624dd3693996bdf3D71D9192';
+
+(async () => {
+  // Get all your boards
+  const boardsResponse = await axios.get(
+    `https://api.trello.com/1/members/me/boards?key=${apiKey}&token=${token}`
+  );
+  const boards = boardsResponse.data;
+  // Set up webhooks for all boards
+  for (const board of boards) {
+    try {
+      const webhookResponse = await axios.post(
+        `https://api.trello.com/1/webhooks/?callbackURL=${callbackURL}&idModel=${board.id}&key=${apiKey}&token=${token}`
+      );
+
+      console.log(
+        `Webhook created for board ${board.name} with ID ${webhookResponse.data.id}`
+      );
+    } catch (error) {
+      console.error(
+        `Error creating webhook for board ${board.name}:`,
+        error.message
+      );
+    }
+  }
+})();
+
+app.post('/trello-webhook', async (req, res) => {
+  const payload = req.body;
+  console.log('zxc');
+  if (payload.action && payload.action.type === 'commentCard') {
+    const cardId = payload.action.data.card.id;
+    // Get card details
+    const cardResponse = await axios.get(
+      `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${token}`
+    );
+    const card = cardResponse.data;
+    console.log('111', card);
+    console.log(payload.action.memberCreator.id);
+    if (card.idMembers.includes(payload.action.memberCreator.id)) {
+      console.log(
+        'New comment on a card assigned to you:',
+        payload.action.data.text
+      );
+      console.log(payload.action.data.text);
+    }
+  }
+
+  res.status(200).send('OK');
 });
 
-mongoose
-  .connect('mongodb://localhost:27017/db_prello')
-  .then(() => {
-    console.log('SUccessfully connect to MongoDB.');
-  })
-  .catch((err) => {
-    console.log('======>', err);
-  });
-
-var fetch = require('node-fetch');
-fetch(
-  'https://api.trello.com/1/members/me/boards?key=7c1b127ab842ef6b6163f45eaa980d4b&xtoken=ATTA463bd12303cd72bef013f6480b51a5124b66c2424fd6977c624dd3693996bdf3D71D9192',
-  {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  }
-)
-  .then((response) => {
-    return response.text();
-  })
-  .then((text) => console.log('123', text))
-  .catch((err) => console.error(err));
-
-fetch(
-  'https://api.trello.com/1/boards/?name={name}&key=APIKey&token=APIToken',
-  {
-    method: 'POST',
-  }
-)
-  .then((response) => {
-    // console.log('asdasdas');
-    // console.log(`Response: ${response.status} ${response.statusText}`);
-    return response.text();
-  })
-  .then((text) => console.log(text))
-  .catch((err) => console.error(err));
-
-app.listen(8080, () => {
-  console.log('success : 8080');
+const port = process.env.PORT || 80;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
