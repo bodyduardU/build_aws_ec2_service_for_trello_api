@@ -19,6 +19,7 @@ const token =
     `https://api.trello.com/1/members/me/boards?key=${apiKey}&token=${token}`
   );
   const boards = boardsResponse.data;
+  console.log(boards);
   // Set up webhooks for all boards
   for (const board of boards) {
     try {
@@ -40,7 +41,7 @@ const token =
 
 app.post('/trello-webhook', async (req, res) => {
   const payload = req.body;
-  console.log('zxc');
+  console.log('okok');
   if (payload.action && payload.action.type === 'commentCard') {
     const cardId = payload.action.data.card.id;
     // Get card details
@@ -48,7 +49,6 @@ app.post('/trello-webhook', async (req, res) => {
       `https://api.trello.com/1/cards/${cardId}?key=${apiKey}&token=${token}`
     );
     const card = cardResponse.data;
-    console.log('111', card);
     console.log(payload.action.memberCreator.id);
     if (card.idMembers.includes(payload.action.memberCreator.id)) {
       console.log(
@@ -60,6 +60,16 @@ app.post('/trello-webhook', async (req, res) => {
   }
 
   res.status(200).send('OK');
+});
+
+app.use('/sendComment', (req, res) => {
+  const cardName = 'asdfasdf'
+  const cardResponse = await axios.get(
+    ``
+  )
+  try {
+    axios.post(`https://api.trello.com/1/cards/{id}/actions/comments?text={text}&key=APIKey&token=APIToken`)
+  } catch (error) {}
 });
 
 const port = process.env.PORT || 80;
